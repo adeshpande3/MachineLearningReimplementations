@@ -1,20 +1,33 @@
 import numpy as np 
 import math
 
+#This program is just a rough reimplementation of linear regression in Python. It's not particularly
+#optimized in any way but it does give a sense of backpropagation, computing the loss function, and
+#updating the weights. The derivatives are taken numerically, instead of analytically. Numeric
+#derivatives are a bit slower and less intuitive, but do still work in this case.
+
 Xtrain = [1,2,3,4] #Stores the training inputs
 Ytrain = [3,5,7,9] #Stores the training labels
 
-#Initialization of weights with random numbers
-learningRate = .001
-numEpochs =100
+#Hyperparameters 
+learningRate = .01
+numEpochs =1000
 
+#In this case, our hypothesis is in the form of a model representing univariate 
+#linear regression. y = theta0 + x*theta1
+def hypothesis(t0,t1,x):
+	return (t0 + t1*x)
+
+#Our loss function is the classic mean squared error form
 def costFunction(t0, t1):
 	loss = 0
 	for i, j in zip(Xtrain,Ytrain):
-		temp = math.pow(((t0 + t1*i) - j),2)
+		temp = math.pow((hypothesis(t0,t1,i) - j),2)
 		loss += temp
 	return loss
 
+#Weight updates are done by taking the derivative of the loss function 
+#with respect to each of the theta values. 
 def weightUpdate(withRespectTo, t0, t1):
 	if (withRespectTo == "theta0"):
 		t0 = t0 - learningRate*(derivative(withRespectTo, t0, t1))
@@ -23,6 +36,7 @@ def weightUpdate(withRespectTo, t0, t1):
 		t1 = t1 - learningRate*(derivative(withRespectTo, t0, t1))
 		return t1
 	
+#Evaluating a numerical deerivative
 def derivative(withRespectTo, t0, t1):
 	h = 1./1000.
 	if (withRespectTo == "theta0"):
@@ -33,11 +47,12 @@ def derivative(withRespectTo, t0, t1):
 	slope = rise/run
 	return slope
 
+#Random initialization of the theta values
 theta0 = np.random.uniform(0,1)
 theta1 = np.random.uniform(0,1)
+#Test value
 Xtest = 5
 for i in range(1,numEpochs):
-	weightUpdate("theta0", theta0, theta1)
-	weightUpdate("theta1", theta0, theta1)
-	print (theta1)
-print (theta0 + theta1*Xtest)
+	theta0 = weightUpdate("theta0", theta0, theta1)
+	theta1 = weightUpdate("theta1", theta0, theta1)
+print (hypothesis(theta0,theta1,Xtest))
