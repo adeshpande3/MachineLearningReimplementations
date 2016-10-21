@@ -52,7 +52,7 @@ theta0 = np.random.uniform(0,1)
 theta1 = np.random.uniform(0,1)
 #Test value
 Xtest = 5
-for i in range(1,numEpochs):
+for i in range(0,numEpochs):
 	theta0 = weightUpdate("theta0", theta0, theta1)
 	theta1 = weightUpdate("theta1", theta0, theta1)
 print (hypothesis(theta0,theta1,Xtest))
