@@ -13,31 +13,39 @@ def distanceBetween(point1,point2):
 	return math.pow((math.pow(point1[0] - point2[0],2) + math.pow(point1[1] - point2[1],2)),0.5)
 
 #Visualize these data points on an 4x4 xy graph
-Xtrain = [[3,1],[3,2],[1,2],[1,3]]
-Ytrain = [1,1,0,0]
+Xtrain = [[3,1],[3,2],[1,2],[1,3],[4,4],[5,5],[5,7],[7,5],[8,8]]
+Ytrain = [2,1,2,1,1,0,0,0,1]
 #Hyperparamters
 numTrainExamples = len(Xtrain)
-numEpochs = 200
-numNeighbors = 3
+numNeighbors = 5
+numClasses = 3 #Classes have to be labeled starting from 0...numCLasses - 1
 
-#TRYING TO FIGURE OUT SORTING LISTS WITHIN LISTS
-
-l = [[3,2,10],[4,3,19],[2,2,12]]
-print l
-sorted(l, key=itemgetter(0))
-print l
-
-Xtest = [3,1.2]
+Xtest = [2,1.2]
 minDistance = sys.maxint
-index = 0
-
-#STILL WORKING ON IT
 
 distanceAndLocation = []
 for x in range(0,numTrainExamples):
 	distance = distanceBetween(Xtrain[x],Xtest)
-	distanceAndLocation.append(distance)
-	
+	distanceAndLocation.append([Xtrain[x], distance, Ytrain[x]])
+distanceAndLocation = sorted(distanceAndLocation, key=itemgetter(1))	
+
+if len(distanceAndLocation) >= numNeighbors:
+	classCount = np.zeros(numClasses)
+	for i in range(0,numNeighbors):
+		temp = distanceAndLocation[i]
+		classCount[temp[2]] = classCount[temp[2]] + 1
+	maxCount = 0
+	index = 0
+	for i in range(0,len(classCount)):
+		if (classCount[i] > maxCount):
+			maxCount = classCount[i]
+			index = i
+	print classCount
+	print index
+else:
+	print 'Number of points less than number of neighbors'
+
+
 
 
 
